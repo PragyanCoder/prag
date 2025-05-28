@@ -16,13 +16,8 @@ db = client['space_monitoring']
 # Telegram Bot Token (replace with your actual bot token)
 telegram_token = "8040785759:AAHEtdMrtST5LyfaYlVpUPzPzp6_LxekDnQ"
 
-# Initialize Telegram Application
+# Initialize the Application with Token
 application = Application.builder().token(telegram_token).build()
-
-# Initialize Scheduler with timezone
-timezone = pytz.timezone("Asia/Kolkata")  # Change to your desired timezone
-scheduler = AsyncIOScheduler(timezone=timezone)
-scheduler.start()
 
 # Setup logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
@@ -142,6 +137,9 @@ application.add_handler(CallbackQueryHandler(button))
 
 # Run the bot
 async def main():
+    # Explicitly set the timezone for the application.
+    timezone = pytz.timezone("Asia/Kolkata")  # Change to your desired timezone.
+    application.job_queue._scheduler.timezone = timezone
     await application.run_polling()
 
 if __name__ == "__main__":
