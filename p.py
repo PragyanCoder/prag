@@ -2,7 +2,7 @@ import os
 import requests
 import logging
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
-from telegram.ext import CommandHandler, CallbackQueryHandler, Application
+from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 from motor.motor_asyncio import AsyncIOMotorClient
 import asyncio
 
@@ -22,12 +22,12 @@ logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s
 logger = logging.getLogger(__name__)
 
 # Function to handle /start command
-async def start(update: Update, context):
+async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     await update.message.reply("Welcome! Please set your Hugging Face credentials using /set.")
 
 # Function to handle /set command where users input their Hugging Face details
-async def set_credentials(update: Update, context):
+async def set_credentials(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     if len(context.args) != 2:
         await update.message.reply("Please provide the correct format: `/set hf_token=<YOUR_HF_TOKEN> hf_username=<YOUR_USERNAME>`")
@@ -45,7 +45,7 @@ async def set_credentials(update: Update, context):
     await update.message.reply(f"Credentials saved. Now you can fetch your spaces with /fetch")
 
 # Function to handle /fetch command to get spaces from Hugging Face API
-async def fetch_spaces(update: Update, context):
+async def fetch_spaces(update: Update, context: ContextTypes.DEFAULT_TYPE):
     user_id = update.message.from_user.id
     user = await db.users.find_one({"_id": user_id})
 
@@ -84,7 +84,7 @@ async def fetch_spaces(update: Update, context):
         await update.message.reply(f"Error fetching spaces: {e}")
 
 # Function to handle the button clicks (start monitoring a space)
-async def button(update: Update, context):
+async def button(update: Update, context: ContextTypes.DEFAULT_TYPE):
     query = update.callback_query
     space_url = query.data
     user_id = query.from_user.id
