@@ -5,6 +5,8 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup, Update
 from telegram.ext import Application, CommandHandler, CallbackQueryHandler, ContextTypes
 from motor.motor_asyncio import AsyncIOMotorClient
 import asyncio
+import pytz
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
 
 # MongoDB Setup
 MONGO_URI = "mongodb+srv://rahul:rahul@cluster0.tmhfkw.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0"
@@ -16,6 +18,11 @@ telegram_token = "8040785759:AAHEtdMrtST5LyfaYlVpUPzPzp6_LxekDnQ"
 
 # Initialize Telegram Application
 application = Application.builder().token(telegram_token).build()
+
+# Initialize Scheduler with timezone
+timezone = pytz.timezone("Asia/Kolkata")  # Change to your desired timezone
+scheduler = AsyncIOScheduler(timezone=timezone)
+scheduler.start()
 
 # Setup logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s', level=logging.INFO)
